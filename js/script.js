@@ -16,15 +16,15 @@ const playAgainButton = document.querySelector(".play-again");
 // Restarts game
 
 const word = "magnolia";
+const arrayGuessedLetters = [];
 
 guessButton.addEventListener("click", function(e){
     e.preventDefault();
-    const playerGuess = inputBox.value;
-    let listItem = document.createElement("li");
-    listItem.innerText = playerGuess;
-    guessedLetters.append(listItem);
-    inputBox.value = "";
-
+    const playerEntry = inputBox.value;
+    messageToPlayer.innerText = "";
+    checkInput(playerEntry);
+    const playerGuess = (checkInput(playerEntry)).toUpperCase();
+    makeGuess(playerGuess);
 });
 
 function hideWord (word){
@@ -37,3 +37,37 @@ function hideWord (word){
     wordInProgress.innerText = hiddenWord;
 };
 
+function checkInput(input){
+    const acceptedLetter = /[a-zA-Z]/g;
+    const found = input.match(acceptedLetter);
+    if (found === null) {
+        messageToPlayer.innerText = "Please go right ahead and pop a letter in that box there. Go ahead, it's free. Just one please. Any letter, really! Oh LORD not that one though, are you trying to- *ahem*, excuse me, I meant to say, of course you can enter any one letter, I respect the way you want to play the game.";
+        clearInput();
+    } else if (found.length === 26) {
+        messageToPlayer.innerText = "I like you. You're an out of the box thinker and I respect that. Sadly your genius 'enter the entire alphabet' plan is exactly the sort of cunning clownery I would have attempted. Let's chalk it up to a loss for the game and possibly your dignity, but a huge win for your problem solving skills and our interpersonal relationship. Maybe that's the true win.";        
+        clearInput();
+    } else if (found.length > 1) {
+        messageToPlayer.innerText = "Slow down Moriarty. Cunning plan, but please only enter one letter at a time. Two letters? No dice. Three? Also no. Four, five, six?! That way madness lies. I think we'll both have a better time if you just enter one letter at a time.";
+        clearInput();
+    } else {
+    clearInput();
+    return found[0];
+    }
+     
+};
+
+function clearInput(){
+    inputBox.value = "";
+};
+
+
+function makeGuess(e){
+    const guess = e.toUpperCase();
+    const alreadyGuessed = arrayGuessedLetters.includes(guess);
+    if (alreadyGuessed === true){
+        messageToPlayer.innerText = "You've already guessed that letter. Don't you think it's been through enough already?!"
+    } else {
+        arrayGuessedLetters.push(guess);
+        // console.log(arrayGuessedLetters);
+    }
+};
