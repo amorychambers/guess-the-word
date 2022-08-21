@@ -6,7 +6,7 @@ const inputBox = document.querySelector(".letter");
 // Takes the letter for player's guess
 const wordInProgress = document.querySelector(".word-in-progress");
 // Correctly guessed letters
-const remainingGuesses = document.querySelector(".remaining");
+const allowedGuesses = document.querySelector(".remaining");
 // Message informing player of remaining guesses
 const numGuesses = document.querySelector(".remaining span");
 // Number of guesses remaining
@@ -15,10 +15,24 @@ const messageToPlayer = document.querySelector(".message");
 const playAgainButton = document.querySelector(".play-again");
 // Restarts game
 
-const word = "magnolia";
+let word = "magnolia";
 const arrayGuessedLetters = [];
+let remainingGuesses = 8;
 
-hideWord(word);
+async function getWord(){
+    const data = await fetch(`https://gist.githubusercontent.com/skillcrush-curriculum/7061f1d4d3d5bfe47efbfbcfe42bf57e/raw/5ffc447694486e7dea686f34a6c085ae371b43fe/words.txt`);
+    const wordList = await data.text();
+    const wordListArray = wordList.split("\n");
+    const randomIndex = Math.floor((Math.random() * wordListArray.length));
+    const wordSelection = wordListArray[randomIndex];
+    const newWord = wordSelection.trim();
+    word = newWord;
+    hideWord(word);
+    console.log(word);
+};
+// Gets a new random word
+
+getWord();
 
 guessButton.addEventListener("click", function(e){
     e.preventDefault();
@@ -71,7 +85,10 @@ function makeGuess(e){
         messageToPlayer.innerText = "You've already guessed that letter. Don't you think it's been through enough already?!"
     } else {
         addToGuessed(guess);
+        countdownGuesses(guess);
+        if (!messageToPlayer.classList.contains("lose")){
         updateWord(arrayGuessedLetters);
+        }
     }
 };
 // Checks if player has already submitted the letter, and if not adds to the guessed letter display
@@ -83,6 +100,24 @@ function addToGuessed(letter){
     guessedLetters.append(listItem);
 };
 // Displays already guessed letters on the screen
+
+function countdownGuesses(guess){
+    const wordUpper = word.toUpperCase();
+    const wordArray = wordUpper.split("");
+    if (!wordArray.includes(guess)){
+        if (remainingGuesses > 1){
+            remainingGuesses -= 1;
+            numGuesses.innerHTML = `${remainingGuesses} guesses`;
+        } else {
+            remainingGuesses -= 1;
+            numGuesses.innerHTML = `no guesses`;
+            messageToPlayer.classList.add("lose")
+            messageToPlayer.innerHTML = `<p class="lose-highlight">There are only around 170,000 words in the English language and this one managed to elude you. Did you try 'swordfish'? It's usually 'swordfish'</p>`;
+            wordInProgress.innerText = word.toUpperCase();
+        }
+    }
+};
+// Counts down the player's remaining guesses upon incorrect guess until lose condition
 
 function updateWord(arrayGuessedLetters){
     const wordUpper = word.toUpperCase();
@@ -96,11 +131,13 @@ function updateWord(arrayGuessedLetters){
     wordInProgress.innerText = currentState.join("");
     winCondition(wordInProgress);
 };
+// Updates the hidden word with correctly guessed letters
 
 function winCondition(wordInProgress){
     const correctWord = word.toUpperCase();
     if (wordInProgress.innerText === correctWord){
-        messageToPlayer.innerHTML = '<p class="highlight">You guessed correct the word! Congrats!</p>';
+        messageToPlayer.innerHTML = `<p class="highlight">You guessed the word correctly! Congrats! Have a biscuit. Note that I am doing you the good grace of assuming your fine taste in biscuits and imagining a custard cream or perhaps a HobNob. If it's some kind of coconutty NICE bullshit or a garibaldi you keep that to yourself.</p>`;
         messageToPlayer.classList.add("win");
     }
 };
+// Checks if the player has correctly guessed the word

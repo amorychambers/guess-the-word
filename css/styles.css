@@ -55,6 +55,12 @@ h1 {
   font-size: 1em;
 }
 
+.lose-highlight{
+  padding: 0.25em;
+  background: #36F5E1;
+  font-size: 1em;
+}
+
 .underline {
   border-bottom: 2px solid #fff;
   padding-bottom: 3px;
@@ -138,6 +144,13 @@ input:focus {
 .win {
   padding: 0 1em;
   background: linear-gradient(-45deg, #ff9d64, #f5620c);
+  background-size: 400% 400%;
+  animation: gradient 2s ease infinite;
+}
+
+.lose {
+  padding: 0 1em;
+  background: linear-gradient(-45deg, #3CC3DF, #346CEB);
   background-size: 400% 400%;
   animation: gradient 2s ease infinite;
 }
