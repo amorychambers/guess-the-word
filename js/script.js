@@ -16,7 +16,7 @@ const playAgainButton = document.querySelector(".play-again");
 // Restarts game
 
 let word = "magnolia";
-const arrayGuessedLetters = [];
+let arrayGuessedLetters = [];
 let remainingGuesses = 8;
 
 async function getWord(){
@@ -28,7 +28,7 @@ async function getWord(){
     const newWord = wordSelection.trim();
     word = newWord;
     hideWord(word);
-    console.log(word);
+    // console.log(word);
 };
 // Gets a new random word
 
@@ -42,6 +42,25 @@ guessButton.addEventListener("click", function(e){
     const playerGuess = (checkInput(playerEntry)).toUpperCase();
     makeGuess(playerGuess);
 });
+
+playAgainButton.addEventListener("click", function(){
+    if (messageToPlayer.classList.contains("win")){
+        messageToPlayer.classList.remove("win");
+    } else if (messageToPlayer.classList.contains("lose")){
+        messageToPlayer.classList.remove("lose");
+    }
+    messageToPlayer.innerHTML = "";
+    guessedLetters.innerHTML = "";
+    remainingGuesses = 8;
+    arrayGuessedLetters = [];
+    numGuesses.innerHTML = `${remainingGuesses} guesses`;
+    guessButton.classList.remove("hide");
+    allowedGuesses.classList.remove("hide");
+    guessedLetters.classList.remove("hide");
+    playAgainButton.classList.add("hide");
+    getWord();
+});
+// Restarts the game and all variables to default starting state
 
 function hideWord (word){
     let letters = word.split("");
@@ -111,9 +130,7 @@ function countdownGuesses(guess){
         } else {
             remainingGuesses -= 1;
             numGuesses.innerHTML = `no guesses`;
-            messageToPlayer.classList.add("lose")
-            messageToPlayer.innerHTML = `<p class="lose-highlight">There are only around 170,000 words in the English language and this one managed to elude you. Did you try 'swordfish'? It's usually 'swordfish'</p>`;
-            wordInProgress.innerText = word.toUpperCase();
+            loseCondition();
         }
     }
 };
@@ -136,8 +153,24 @@ function updateWord(arrayGuessedLetters){
 function winCondition(wordInProgress){
     const correctWord = word.toUpperCase();
     if (wordInProgress.innerText === correctWord){
-        messageToPlayer.innerHTML = `<p class="highlight">You guessed the word correctly! Congrats! Have a biscuit. Note that I am doing you the good grace of assuming your fine taste in biscuits and imagining a custard cream or perhaps a HobNob. If it's some kind of coconutty NICE bullshit or a garibaldi you keep that to yourself.</p>`;
+        messageToPlayer.innerHTML = `<p class="highlight">You guessed the word correctly! Congrats! Have a biscuit. Note that I am doing you the good grace of assuming your fine taste in biscuits and imagining a custard cream or perhaps a HobNob. If it's some kind of coconutty NICE nonsense or a garibaldi you keep that to yourself.</p>`;
         messageToPlayer.classList.add("win");
+        startOver();
     }
 };
 // Checks if the player has correctly guessed the word
+
+function loseCondition(){
+    messageToPlayer.classList.add("lose")
+    messageToPlayer.innerHTML = `<p class="lose-highlight">There are only around 170,000 words in the English language and somehow this one managed to elude you. Did you try 'swordfish'? It's usually 'swordfish'.</p>`;
+    wordInProgress.innerText = word.toUpperCase();
+    startOver();
+};
+// Changes page to lose state
+
+function startOver(){
+    guessButton.classList.add("hide");
+    allowedGuesses.classList.add("hide");
+    guessedLetters.classList.add("hide");
+    playAgainButton.classList.remove("hide");
+};
