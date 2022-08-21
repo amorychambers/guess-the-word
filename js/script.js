@@ -18,6 +18,8 @@ const playAgainButton = document.querySelector(".play-again");
 const word = "magnolia";
 const arrayGuessedLetters = [];
 
+hideWord(word);
+
 guessButton.addEventListener("click", function(e){
     e.preventDefault();
     const playerEntry = inputBox.value;
@@ -36,8 +38,6 @@ function hideWord (word){
     wordInProgress.innerText = hiddenWord;
 };
 // Hides the new word from player until letters are guessed
-
-hideWord(word);
 
 function checkInput(input){
     const acceptedLetter = /[a-zA-Z]/g;
@@ -94,4 +94,13 @@ function updateWord(arrayGuessedLetters){
         }
     });
     wordInProgress.innerText = currentState.join("");
+    winCondition(wordInProgress);
+};
+
+function winCondition(wordInProgress){
+    const correctWord = word.toUpperCase();
+    if (wordInProgress.innerText === correctWord){
+        messageToPlayer.innerHTML = '<p class="highlight">You guessed correct the word! Congrats!</p>';
+        messageToPlayer.classList.add("win");
+    }
 };
