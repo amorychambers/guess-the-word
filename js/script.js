@@ -33,9 +33,11 @@ function hideWord (word){
         letters.splice(index, 1, "●");
     });
     let hiddenWord = letters.join("");
-    console.log(hiddenWord);
     wordInProgress.innerText = hiddenWord;
 };
+// Hides the new word from player until letters are guessed
+
+hideWord(word);
 
 function checkInput(input){
     const acceptedLetter = /[a-zA-Z]/g;
@@ -53,12 +55,13 @@ function checkInput(input){
     clearInput();
     return found[0];
     }
-     
 };
+// Checks to make sure player only inputs one letter
 
 function clearInput(){
     inputBox.value = "";
 };
+// Removes letter from the input box
 
 
 function makeGuess(e){
@@ -67,7 +70,28 @@ function makeGuess(e){
     if (alreadyGuessed === true){
         messageToPlayer.innerText = "You've already guessed that letter. Don't you think it's been through enough already?!"
     } else {
-        arrayGuessedLetters.push(guess);
-        // console.log(arrayGuessedLetters);
+        addToGuessed(guess);
+        updateWord(arrayGuessedLetters);
     }
+};
+// Checks if player has already submitted the letter, and if not adds to the guessed letter display
+
+function addToGuessed(letter){
+    arrayGuessedLetters.push(letter);
+    let listItem = document.createElement("li");
+    listItem.innerText = letter;
+    guessedLetters.append(listItem);
+};
+// Displays already guessed letters on the screen
+
+function updateWord(arrayGuessedLetters){
+    const wordUpper = word.toUpperCase();
+    const wordArray = wordUpper.split("");
+    const currentState = wordInProgress.innerText.split("");
+    wordArray.forEach(function (letter, index){
+        if (arrayGuessedLetters.includes(letter)) {
+            currentState.splice(index, 1, letter);
+        }
+    });
+    wordInProgress.innerText = currentState.join("");
 };
